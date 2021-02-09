@@ -8,7 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-//TODO jvöjgaeö
+
+// TODO Bryta upp
+// TODO Göra spelaren till en klass
+// TODO Göra monster till en klass
+// TODO Gägga upp spelplanen i egen klass
+// TODO Gyta ut B och X mot roligare karaktärer
+// TODO Flytta reset bomberna till egen metod
+// TODO Remove playerIcon after moving
 
 public class LanternaTest {
 
