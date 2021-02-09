@@ -23,11 +23,11 @@ public class Player {
     }
 
     public void movePlayerLeft() {
-        y-=1;
+        x-=1;
     }
 
     public void movePlayerRight() {
-        y+=1;
+        x+=1;
     }
 
 }
