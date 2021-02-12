@@ -10,9 +10,9 @@ import java.util.Random;
 
 
 // TODO Lägga in spelplanen i egen metod
-// TODO Metoden för reset bomb kan förbättras tex genom att lägga in monster i en array
-// TODO Monster rensas inte som de ska vid död
-// TODO När man dör ska man märka att man dör tex spela något ljud/delay i tid
+
+
+// TODO ljud efferkter
 // TODO Anpassa frame
 
 public class LanternaTest {
@@ -33,12 +33,10 @@ public class LanternaTest {
 
         terminal.setCursorVisible(false);
 
-
+        int score=0;
         // KeyStroke keyStroke = terminal.pollInput();
 
 
-        int xOldBombsPos;
-        int yOldBombsPos;
 
         // final char monster ='M';
         boolean continueReadingInput = true;
@@ -48,50 +46,51 @@ public class LanternaTest {
         Position position = new Position(0, 0);
         List<Position> obsticleList = new ArrayList<>();
 
+
+
+
+
         // Top frame
         for (int i = 0; i <= 79; i++) {
-            terminal.setCursorPosition(i, 0);
-            terminal.putCharacter(block);
             obsticleList.add(new Position(i, 0));
-            terminal.flush();
-        }
+                }
 
         //Bottom frame
 
         for (int i = 0; i <= 79; i++) {
-            terminal.setCursorPosition(i, 23);
-            terminal.putCharacter(block);
-            obsticleList.add(new Position(i, 23));
-            terminal.flush();
-        }
+          obsticleList.add(new Position(i, 23));
+                  }
 
         //left Frame
 
         for (int i = 0; i <= 23; i++) {
-            terminal.setCursorPosition(0, i);
-            terminal.putCharacter(block);
-            obsticleList.add(new Position(0, i));
-            terminal.flush();
-        }
+          obsticleList.add(new Position(0, i));
+                 }
 
         //Right frame
 
         for (int i = 0; i <= 23; i++) {
-            terminal.setCursorPosition(79, i);
-            terminal.putCharacter(block);
-            obsticleList.add(new Position(79, i));
-            terminal.flush();
-        }
+           obsticleList.add(new Position(79, i));
+                }
+
+        drawFrame(obsticleList, block);
 
 
-        //Set Bomb/Monster position
+        // create arrayList fro monster
+
+        List<Monster> monsterList = new ArrayList<>();
+
+        //Set Monster position
 
         Random r = new Random();
         Monster monster1 = new Monster(r.nextInt(78), r.nextInt(23), '\u046A');
+        monsterList.add(monster1);
 
         Monster monster2 = new Monster(r.nextInt(78), r.nextInt(23), '\u046A');
+        monsterList.add(monster2);
 
         Monster monster3 = new Monster(r.nextInt(78), r.nextInt(23), '\u046A');
+        monsterList.add(monster3);
 
         terminal.setCursorPosition(monster1.x, monster1.y);
         terminal.putCharacter(monster1.monsterIcon);
@@ -110,6 +109,7 @@ public class LanternaTest {
         terminal.setCursorPosition(player.x, player.y);
         terminal.putCharacter(player.playerIcon);
         terminal.flush();
+
 
 
         do {
@@ -169,32 +169,20 @@ public class LanternaTest {
                 CleanAndMove(player.x, player.y, player.xOld,player.yOld, player.playerIcon);
             } else {
                 CleanAndMove(player.x, player.y, player.xOld,player.yOld, player.playerIcon);
+                score++;
             }
 
-            //Move monster 1
 
-            monster1.xOld = monster1.x;
-            monster1.xOld = monster1.y;
-            monster1.moveMonster(player);
+            for(Monster m:monsterList) {
 
-            CleanAndMove(monster1.x, monster1.y, monster1.xOld, monster1.yOld, monster1.monsterIcon);
+                m.xOld = m.x;
+                m.xOld = m.y;
+                m.moveMonster(player);
 
-            //Move monster 2
+                CleanAndMove(m.x, m.y, m.xOld, m.yOld, m.monsterIcon);
 
-            monster2.xOld = monster2.x;
-            monster2.xOld = monster2.y;
-            monster2.moveMonster(player);
 
-            CleanAndMove(monster2.x, monster2.y, monster2.xOld, monster2.yOld, monster2.monsterIcon);
-
-            //Move monster 3
-
-            monster3.xOld = monster3.x;
-            monster3.xOld = monster3.y;
-            monster3.moveMonster(player);
-
-            CleanAndMove(monster3.x, monster3.y, monster3.xOld, monster3.yOld, monster3.monsterIcon);
-
+            }
 
             // logging activities
 
@@ -207,94 +195,38 @@ public class LanternaTest {
 
             // decrease life when we die from monster
 
-            if (monster1.x == player.x && monster1.y == player.y) {
-                if (player.numberLife > 1) {
-                    player.numberLife--;
+            for(Monster m:monsterList) {
+
+                // Check if we have hit a monster
+
+                if (m.x == player.x && m.y == player.y) {
+                    if (player.numberLife > 1) {
+                        player.numberLife--;
 
 
-                    // Reset av monster 1
+                        // Reset of all monster
 
-                    monster1.x = r.nextInt(78);
-                    monster1.y = r.nextInt(23);
-                    CleanAndMove(monster1.x, monster1.y, monster1.xOld, monster1.yOld, monster1.monsterIcon);
+                        for(Monster mon: monsterList) {
+                            mon.xOld = mon.x;
+                            mon.yOld = mon.y;
+                            mon.x = r.nextInt(78);
+                            mon.y = r.nextInt(23);
+                            CleanAndMove(mon.x, mon.y, mon.xOld, mon.yOld, mon.monsterIcon);
+                        }
 
-                    // Reset av monster 2
+                        Print(player.numberLife);
+                    } else {
+                        terminal.clearScreen();
+                        printEndScreen(score);
+                        break;
 
-                    monster2.x = r.nextInt(78);
-                    monster2.y = r.nextInt(23);
-                    CleanAndMove(monster2.x, monster2.y, monster2.xOld, monster2.yOld, monster2.monsterIcon);
 
-                    // Reset av monster 3
 
-                    monster3.x = r.nextInt(78);
-                    monster3.y = r.nextInt(23);
-                    CleanAndMove(monster3.x, monster3.y, monster3.xOld, monster3.yOld, monster3.monsterIcon);
-
-                    Print(player.numberLife);
-                } else {
-                    continueReadingInput = false;
-                }
-            }
-            // decrease life when we die from bomb 2
-
-            if (monster2.x == player.x && monster2.y == player.y) {
-                if (player.numberLife > 1) {
-                    player.numberLife--;
-
-                    // Reset av monster 1
-
-                    monster1.x = r.nextInt(78);
-                    monster1.y = r.nextInt(23);
-                    CleanAndMove(monster1.x, monster1.y, monster1.xOld, monster1.yOld, monster1.monsterIcon);
-
-                    // Reset av monster 2
-
-                    monster2.x = r.nextInt(78);
-                    monster2.y = r.nextInt(23);
-                    CleanAndMove(monster2.x, monster2.y, monster2.xOld, monster2.yOld, monster2.monsterIcon);
-
-                    // Reset av monster 3
-
-                    monster3.x = r.nextInt(78);
-                    monster3.y = r.nextInt(23);
-                    CleanAndMove(monster3.x, monster3.y, monster3.xOld, monster3.yOld, monster3.monsterIcon);
-
-                    Print(player.numberLife);
-
-                } else {
-                    continueReadingInput = false;
+                        //continueReadingInput = false;
+                    }
                 }
             }
 
-            // decrease life when we die from bomb 3
-            if (monster3.x == player.x && monster3.y == player.y) {
-                if (player.numberLife > 1) {
-                    player.numberLife--;
-
-                    // Reset av monster 1
-
-                    monster1.x = r.nextInt(78);
-                    monster1.y = r.nextInt(23);
-                    CleanAndMove(monster1.x, monster1.y, monster1.xOld, monster1.yOld, monster1.monsterIcon);
-
-                    // Reset av monster 2
-
-                    monster2.x = r.nextInt(78);
-                    monster2.y = r.nextInt(23);
-                    CleanAndMove(monster2.x, monster2.y, monster2.xOld, monster2.yOld, monster2.monsterIcon);
-
-                    // Reset av monster 3
-
-                    monster3.x = r.nextInt(78);
-                    monster3.y = r.nextInt(23);
-                    CleanAndMove(monster3.x, monster3.y, monster3.xOld, monster3.yOld, monster3.monsterIcon);
-
-                    Print(player.numberLife);
-
-                } else {
-                    continueReadingInput = false;
-                }
-            }
 
 
         } while (continueReadingInput);
@@ -308,7 +240,7 @@ public class LanternaTest {
         int length = lanternaPrint.length();
 
         for (int column = 1; column <= length; column++) {
-            terminal.setCursorPosition(column + 30, 4);
+            terminal.setCursorPosition(column + 22, 11);
 
             terminal.putCharacter(lanternaPrint.charAt(column - 1));
             terminal.flush();
@@ -320,7 +252,7 @@ public class LanternaTest {
         int length = lanternaPrint.length();
 
         for (int column = 1; column <= length; column++) {
-            terminal.setCursorPosition(column + 30, 4);
+            terminal.setCursorPosition(column + 22, 11);
 
             terminal.putCharacter(lanternaPrint.charAt(column - 1));
             terminal.flush();
@@ -337,18 +269,50 @@ public class LanternaTest {
         terminal.flush();
     }
 
+    public static void printEndScreen(int score) throws IOException {
+        String gameOverPrint = "GAME OVER";
+        int length = gameOverPrint.length();
+
+        for (int column = 1; column <= length; column++) {
+            terminal.setCursorPosition(column + 35, 8);
+
+            terminal.putCharacter(gameOverPrint.charAt(column - 1));
+            terminal.flush();
+        }
+
+        String scorePrint = "Your total score is: " + score ;
+        length = scorePrint.length();
+
+        for (int column = 1; column <= length; column++) {
+            terminal.setCursorPosition(column + 28, 10);
+
+            terminal.putCharacter(scorePrint.charAt(column - 1));
+            terminal.flush();
+        }
+
+        String endTextPrint = "Press any key to play again or press q to exit";
+        length = endTextPrint.length();
+
+        for (int column = 1; column <= length; column++) {
+            terminal.setCursorPosition(column + 17, 14);
+
+            terminal.putCharacter(endTextPrint.charAt(column - 1));
+            terminal.flush();
+        }
+
+    }
+
+        public static void drawFrame(List<Position> frame, char block) throws IOException {
+
+            for (Position list:frame) {
+                terminal.setCursorPosition(list.x, list.y);
+                terminal.putCharacter(block);
+                terminal.flush();
+            }
+
+        }
+
 }
 
 
 
-/*
- String lanternaPrint = "This is a String printed out in Lanterna by iterating over the characters";
-        int length = lanternaPrint.length();
-
-        for(int column = 1; column < length; column++) {
-            terminal.setCursorPosition(column, 4);
-
-            terminal.putCharacter(lanternaPrint.charAt(column-1));
-            terminal.flush();
-        }
- */

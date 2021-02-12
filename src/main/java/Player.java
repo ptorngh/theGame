@@ -17,25 +17,25 @@ public class Player {
     public void movePlayerUp() {
         yOld = y;
         xOld = x;
-        y-=2;
+        y-=1;
     }
 
     public void movePlayerDown() {
         yOld = y;
         xOld = x;
-        y+=2;
+        y+=1;
     }
 
     public void movePlayerLeft() {
         yOld = y;
         xOld = x;
-        x-=2;
+        x-=1;
     }
 
     public void movePlayerRight() {
         yOld = y;
         xOld = x;
-        x+=2;
+        x+=1;
     }
 
 }
