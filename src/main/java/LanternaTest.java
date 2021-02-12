@@ -9,12 +9,11 @@ import java.util.List;
 import java.util.Random;
 
 
-// TODO Bryta upp
-// TODO Göra monster till en klass
-// TODO Lägga upp spelplanen i egen klass
-// TODO Byta ut B och X mot roligare karaktärer
-// TODO Flytta reset bomberna till egen metod
-// TODO Remove playerIcon after moving
+// TODO Lägga in spelplanen i egen metod
+// TODO Metoden för reset bomb kan förbättras tex genom att lägga in monster i en array
+// TODO Monster rensas inte som de ska vid död
+// TODO När man dör ska man märka att man dör tex spela något ljud/delay i tid
+// TODO Anpassa frame
 
 public class LanternaTest {
 
