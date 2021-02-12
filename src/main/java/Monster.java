@@ -20,18 +20,15 @@ public class Monster {
         xOld = x;
         yOld = y;
 
-
         if (player.x < x) {
             x--;
-        }
-        else if (player.x > x){
+        } else if (player.x > x) {
             x++;
         }
 
         if (player.y < y) {
             y--;
-        }
-        else if (player.y > y) {
+        } else if (player.y > y) {
             y++;
         }
 

@@ -3,7 +3,7 @@ public class Bomb {
     int x;
     int y;
 
-    final char bombIcon;
+   //final char bombIcon;
 
 
     //xOldBombsPos = bombPosition.x;

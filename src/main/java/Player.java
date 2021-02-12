@@ -15,18 +15,26 @@ public class Player {
     }
 
     public void movePlayerUp() {
+        yOld = y;
+        xOld = x;
         y-=2;
     }
 
     public void movePlayerDown() {
+        yOld = y;
+        xOld = x;
         y+=2;
     }
 
     public void movePlayerLeft() {
+        yOld = y;
+        xOld = x;
         x-=2;
     }
 
     public void movePlayerRight() {
+        yOld = y;
+        xOld = x;
         x+=2;
     }
 
