@@ -3,7 +3,7 @@ public class Player {
     int y;
     int xOld;
     int yOld;
-    final char playerIcon ='X';
+    final char playerIcon ='O';
     int numberLife;
 
     public Player(int x, int y) {
@@ -15,19 +15,19 @@ public class Player {
     }
 
     public void movePlayerUp() {
-        y-=1;
+        y-=2;
     }
 
     public void movePlayerDown() {
-        y+=1;
+        y+=2;
     }
 
     public void movePlayerLeft() {
-        x-=1;
+        x-=2;
     }
 
     public void movePlayerRight() {
-        x+=1;
+        x+=2;
     }
 
 }

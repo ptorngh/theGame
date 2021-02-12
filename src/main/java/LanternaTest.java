@@ -10,10 +10,9 @@ import java.util.Random;
 
 
 // TODO Bryta upp
-// TODO Göra spelaren till en klass
 // TODO Göra monster till en klass
-// TODO Gägga upp spelplanen i egen klass
-// TODO Gyta ut B och X mot roligare karaktärer
+// TODO Lägga upp spelplanen i egen klass
+// TODO Byta ut B och X mot roligare karaktärer
 // TODO Flytta reset bomberna till egen metod
 // TODO Remove playerIcon after moving
 
@@ -33,79 +32,79 @@ public class LanternaTest {
     public static void main(String[] args) throws Exception {
 
 
-
         terminal.setCursorVisible(false);
 
 
-       // KeyStroke keyStroke = terminal.pollInput();
+        // KeyStroke keyStroke = terminal.pollInput();
 
 
         int xOldBombsPos;
         int yOldBombsPos;
 
-       // final char monster ='M';
+        // final char monster ='M';
         boolean continueReadingInput = true;
         final char block = '\u2588';
 
 
-        Position position = new Position(0,0);
+        Position position = new Position(0, 0);
         List<Position> obsticleList = new ArrayList<>();
 
         // Top frame
-        for(int i = 0; i <= 79; i++) {
+        for (int i = 0; i <= 79; i++) {
             terminal.setCursorPosition(i, 0);
             terminal.putCharacter(block);
-            obsticleList.add(new Position(i,0));
+            obsticleList.add(new Position(i, 0));
             terminal.flush();
         }
 
         //Bottom frame
 
-        for(int i = 0; i <= 79; i++) {
+        for (int i = 0; i <= 79; i++) {
             terminal.setCursorPosition(i, 23);
             terminal.putCharacter(block);
-            obsticleList.add(new Position(i,23));
+            obsticleList.add(new Position(i, 23));
             terminal.flush();
         }
 
         //left Frame
 
-        for(int i = 0; i <= 23; i++) {
+        for (int i = 0; i <= 23; i++) {
             terminal.setCursorPosition(0, i);
             terminal.putCharacter(block);
-            obsticleList.add(new Position(0,i));
+            obsticleList.add(new Position(0, i));
             terminal.flush();
         }
 
         //Right frame
 
-        for(int i = 0; i <= 23; i++) {
+        for (int i = 0; i <= 23; i++) {
             terminal.setCursorPosition(79, i);
             terminal.putCharacter(block);
             obsticleList.add(new Position(79, i));
             terminal.flush();
         }
 
+
         //Set Bomb/Monster position
 
         Random r = new Random();
-        Position bombPosition = new Position(r.nextInt(78), r.nextInt(23));
+        Monster monster1 = new Monster(r.nextInt(78), r.nextInt(23), '\u046A');
 
-        Position bombPosition2 = new Position(r.nextInt(78), r.nextInt(23));
+        Monster monster2 = new Monster(r.nextInt(78), r.nextInt(23), '\u046A');
 
-        Position bombPosition3 = new Position(r.nextInt(78), r.nextInt(23));
+        Monster monster3 = new Monster(r.nextInt(78), r.nextInt(23), '\u046A');
 
-        terminal.setCursorPosition(bombPosition.x, bombPosition.y);
-        terminal.putCharacter('B');
+        terminal.setCursorPosition(monster1.x, monster1.y);
+        terminal.putCharacter(monster1.monsterIcon);
 
-        terminal.setCursorPosition(bombPosition2.x, bombPosition2.y);
-        terminal.putCharacter('B');
+        terminal.setCursorPosition(monster2.x, monster2.y);
+        terminal.putCharacter(monster2.monsterIcon);
 
-        terminal.setCursorPosition(bombPosition3.x, bombPosition2.y);
-        terminal.putCharacter('B');
+        terminal.setCursorPosition(monster3.x, monster3.y);
+        terminal.putCharacter(monster3.monsterIcon);
 
         // create player object
-        Player player = new Player(35,12);
+        Player player = new Player(35, 12);
 
 
         // set player starting position
@@ -114,11 +113,7 @@ public class LanternaTest {
         terminal.flush();
 
 
-
-
-
-
-        do  {
+        do {
 
 
             KeyStroke keyStroke = null;
@@ -134,15 +129,14 @@ public class LanternaTest {
             Character c = keyStroke.getCharacter();// used Character, not char because it might be null
 
 
-
-            switch(type) {
+            switch (type) {
                 case ArrowUp:
                     player.movePlayerUp();
                     break;
 
                 case ArrowDown:
-                   player.movePlayerDown();
-                   break;
+                    player.movePlayerDown();
+                    break;
 
                 case ArrowLeft:
                     player.movePlayerLeft();
@@ -161,28 +155,21 @@ public class LanternaTest {
 
             boolean crashIntoObsticle = false;
 
-            for (Position p: obsticleList) {
+            for (Position p : obsticleList) {
                 //System.out.println(" " + p.x + " " + p.y);
                 if (p.x == player.x && p.y == player.y) {
                     crashIntoObsticle = true;
                 }
             }
 
+            // Move player after checking if it crashes into obstacle
             if (crashIntoObsticle) {
+
                 player.x = player.xOld;
                 player.y = player.yOld;
-                terminal.setCursorPosition(player.x, player.y);
-                terminal.putCharacter(player.playerIcon);
-                terminal.flush();
-            }
-
-            else {
-                terminal.setCursorPosition(player.xOld, player.yOld);
-                terminal.putCharacter(' ');
-                terminal.setCursorPosition(player.x, player.y);
-                terminal.putCharacter(player.playerIcon);
-
-                terminal.flush();
+                CleanAndMove(player.x, player.y, player.xOld,player.yOld, player.playerIcon);
+            } else {
+                CleanAndMove(player.x, player.y, player.xOld,player.yOld, player.playerIcon);
             }
 
             //Move bomb
@@ -192,21 +179,19 @@ public class LanternaTest {
 
             if (player.x < bombPosition.x) {
                 bombPosition.x--;
-            }
-            else if (player.x > bombPosition.x){
+            } else if (player.x > bombPosition.x) {
                 bombPosition.x++;
             }
 
             if (player.y < bombPosition.y) {
                 bombPosition.y--;
-            }
-            else if (player.y > bombPosition.y) {
+            } else if (player.y > bombPosition.y) {
                 bombPosition.y++;
             }
             terminal.setCursorPosition(xOldBombsPos, yOldBombsPos);
             terminal.putCharacter(' ');
             terminal.setCursorPosition(bombPosition.x, bombPosition.y);
-            terminal.putCharacter('B');
+            terminal.putCharacter('\u046A');
 
             terminal.flush();
 
@@ -217,21 +202,19 @@ public class LanternaTest {
 
             if (player.x < bombPosition2.x) {
                 bombPosition2.x--;
-            }
-            else if (player.x > bombPosition2.x){
+            } else if (player.x > bombPosition2.x) {
                 bombPosition2.x++;
             }
 
             if (player.y < bombPosition2.y) {
                 bombPosition2.y--;
-            }
-            else if (player.y > bombPosition2.y) {
+            } else if (player.y > bombPosition2.y) {
                 bombPosition2.y++;
             }
             terminal.setCursorPosition(xOldBombsPos, yOldBombsPos);
             terminal.putCharacter(' ');
             terminal.setCursorPosition(bombPosition2.x, bombPosition2.y);
-            terminal.putCharacter('B');
+            terminal.putCharacter('\u046A');
 
             terminal.flush();
 
@@ -243,24 +226,21 @@ public class LanternaTest {
 
             if (player.x < bombPosition3.x) {
                 bombPosition3.x--;
-            }
-            else if (player.x > bombPosition3.x){
+            } else if (player.x > bombPosition3.x) {
                 bombPosition3.x++;
             }
 
             if (player.y < bombPosition3.y) {
                 bombPosition3.y--;
-            }
-            else if (player.y > bombPosition3.y) {
+            } else if (player.y > bombPosition3.y) {
                 bombPosition3.y++;
             }
             terminal.setCursorPosition(xOldBombsPos, yOldBombsPos);
             terminal.putCharacter(' ');
             terminal.setCursorPosition(bombPosition3.x, bombPosition3.y);
-            terminal.putCharacter('B');
+            terminal.putCharacter('\u046A');
 
             terminal.flush();
-
 
 
             System.out.println(" Column:" + player.x + " Row:" + player.y + " " + type);
@@ -283,7 +263,7 @@ public class LanternaTest {
                     bombPosition.x = r.nextInt(78);
                     bombPosition.y = r.nextInt(23);
                     terminal.setCursorPosition(bombPosition.x, bombPosition.y);
-                    terminal.putCharacter('B');
+                    terminal.putCharacter('\u046A');
 
 
                     // Reset av bomb 2
@@ -292,7 +272,7 @@ public class LanternaTest {
                     bombPosition2.x = r.nextInt(78);
                     bombPosition2.y = r.nextInt(23);
                     terminal.setCursorPosition(bombPosition2.x, bombPosition2.y);
-                    terminal.putCharacter('B');
+                    terminal.putCharacter('\u046A');
 
                     // Reset av bomb 3
                     terminal.setCursorPosition(bombPosition3.x, bombPosition3.y);
@@ -300,7 +280,7 @@ public class LanternaTest {
                     bombPosition3.x = r.nextInt(78);
                     bombPosition3.y = r.nextInt(23);
                     terminal.setCursorPosition(bombPosition3.x, bombPosition3.y);
-                    terminal.putCharacter('B');
+                    terminal.putCharacter('\u046A');
 
                     terminal.flush();
 
@@ -311,7 +291,7 @@ public class LanternaTest {
             }
             // decrease life when we die from bomb 2
 
-            if (bombPosition2.x == player.x && bombPosition2.y == player.y){
+            if (bombPosition2.x == player.x && bombPosition2.y == player.y) {
                 if (player.numberLife > 1) {
                     player.numberLife--;
 
@@ -321,7 +301,7 @@ public class LanternaTest {
                     bombPosition.x = r.nextInt(78);
                     bombPosition.y = r.nextInt(23);
                     terminal.setCursorPosition(bombPosition.x, bombPosition.y);
-                    terminal.putCharacter('B');
+                    terminal.putCharacter('\u046A');
 
 
                     // Reset av bomb 2
@@ -330,7 +310,7 @@ public class LanternaTest {
                     bombPosition2.x = r.nextInt(78);
                     bombPosition2.y = r.nextInt(23);
                     terminal.setCursorPosition(bombPosition2.x, bombPosition2.y);
-                    terminal.putCharacter('B');
+                    terminal.putCharacter('\u046A');
 
                     // Reset av bomb 3
                     terminal.setCursorPosition(bombPosition3.x, bombPosition3.y);
@@ -338,7 +318,7 @@ public class LanternaTest {
                     bombPosition3.x = r.nextInt(78);
                     bombPosition3.y = r.nextInt(23);
                     terminal.setCursorPosition(bombPosition3.x, bombPosition3.y);
-                    terminal.putCharacter('B');
+                    terminal.putCharacter('\u046A');
 
                     terminal.flush();
                     Print(player.numberLife);
@@ -349,7 +329,7 @@ public class LanternaTest {
             }
 
             // decrease life when we die from bomb 3
-            if (bombPosition2.x == player.x && bombPosition2.y == player.y){
+            if (bombPosition2.x == player.x && bombPosition2.y == player.y) {
                 if (player.numberLife > 1) {
                     player.numberLife--;
 
@@ -359,7 +339,7 @@ public class LanternaTest {
                     bombPosition.x = r.nextInt(78);
                     bombPosition.y = r.nextInt(23);
                     terminal.setCursorPosition(bombPosition.x, bombPosition.y);
-                    terminal.putCharacter('B');
+                    terminal.putCharacter('\u046A');
 
 
                     // Reset av bomb 2
@@ -368,7 +348,7 @@ public class LanternaTest {
                     bombPosition2.x = r.nextInt(78);
                     bombPosition2.y = r.nextInt(23);
                     terminal.setCursorPosition(bombPosition2.x, bombPosition2.y);
-                    terminal.putCharacter('B');
+                    terminal.putCharacter('\u046A');
 
                     // Reset av bomb 3
                     terminal.setCursorPosition(bombPosition3.x, bombPosition3.y);
@@ -376,7 +356,7 @@ public class LanternaTest {
                     bombPosition3.x = r.nextInt(78);
                     bombPosition3.y = r.nextInt(23);
                     terminal.setCursorPosition(bombPosition3.x, bombPosition3.y);
-                    terminal.putCharacter('B');
+                    terminal.putCharacter('\u046A');
 
                     terminal.flush();
                     Print(player.numberLife);
@@ -398,7 +378,7 @@ public class LanternaTest {
         int length = lanternaPrint.length();
 
         for (int column = 1; column <= length; column++) {
-            terminal.setCursorPosition(column+30, 4);
+            terminal.setCursorPosition(column + 30, 4);
 
             terminal.putCharacter(lanternaPrint.charAt(column - 1));
             terminal.flush();
@@ -410,12 +390,23 @@ public class LanternaTest {
         int length = lanternaPrint.length();
 
         for (int column = 1; column <= length; column++) {
-            terminal.setCursorPosition(column+30, 4);
+            terminal.setCursorPosition(column + 30, 4);
 
             terminal.putCharacter(lanternaPrint.charAt(column - 1));
             terminal.flush();
         }
     }
+
+    public static int CleanAndMove(int x, int y, int xOld, int yOld, char icon) throws IOException {
+
+        // Clean out old position icon, and draw icon on new position
+        terminal.setCursorPosition(xOld, yOld);
+        terminal.putCharacter(' ');
+        terminal.setCursorPosition(x, y);
+        terminal.putCharacter(icon);
+        terminal.flush();
+    }
+
 }
 
 
