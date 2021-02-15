@@ -1,4 +1,3 @@
-import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -9,11 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-// TODO ljudefferkter
-// TODO Anpassa frame
-// TODO Färger
-
-public class LanternaTest {
+public class theGame {
 
     static DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory();
     static Terminal terminal;
@@ -30,19 +25,17 @@ public class LanternaTest {
 
         terminal.setCursorVisible(false);
 
-        int score = 0;
-        KeyStroke keyStroke = terminal.pollInput();
-
-
-        // final char monster ='M';
+        int score;
+        int highScore = 0;
         boolean continueReadingInput = true;
         boolean isPlaying = true;
         final char block = '\u2588';
 
+        KeyStroke keyStroke = terminal.pollInput();
 
         Position position = new Position(0, 0);
-        List<Position> obsticleList = new ArrayList<>();
-
+        List<Position> obsticleList = new ArrayList<>(); // Create list of obstacle positions
+        List<Monster> monsterList = new ArrayList<>(); // Create list of monsters from monster
 
         // Create frame parameters
 
@@ -99,11 +92,6 @@ public class LanternaTest {
         }
 
         drawFrame(obsticleList, block);
-
-
-        // create arrayList from monster
-
-        List<Monster> monsterList = new ArrayList<>();
 
         //Set Monster position
 
@@ -230,7 +218,7 @@ public class LanternaTest {
 
                     m.xOld = m.x;
                     m.xOld = m.y;
-                    m.moveMonster(player, obsticleList);
+                    m.moveMonster(player);
 
                     CleanAndMove(m.x, m.y, m.xOld, m.yOld, m.monsterIcon);
 
@@ -282,7 +270,12 @@ public class LanternaTest {
             } while (continueReadingInput);
 
             terminal.clearScreen();
-            printEndScreen(score);
+
+            if (score > highScore) {
+                highScore = score;
+            }
+
+            printEndScreen(score, highScore);
 
             // Wait for player keystroke to restart outer loop / game
 
@@ -342,7 +335,7 @@ public class LanternaTest {
         terminal.flush();
     }
 
-    public static void printEndScreen(int score) throws IOException {
+    public static void printEndScreen(int score, int highScore) throws IOException {
         String gameOverPrint = "GAME OVER";
         int length = gameOverPrint.length();
 
@@ -367,9 +360,19 @@ public class LanternaTest {
         length = endTextPrint.length();
 
         for (int column = 1; column <= length; column++) {
-            terminal.setCursorPosition(column + 17, 14);
+            terminal.setCursorPosition(column + 17, 16);
 
             terminal.putCharacter(endTextPrint.charAt(column - 1));
+            terminal.flush();
+        }
+
+        String highScoreString = "The highscore is: " + highScore;
+        length = highScoreString.length();
+
+        for (int column = 1; column <= length; column++) {
+            terminal.setCursorPosition(column + 29, 12);
+
+            terminal.putCharacter(highScoreString.charAt(column - 1));
             terminal.flush();
         }
 
