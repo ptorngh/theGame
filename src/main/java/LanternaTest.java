@@ -222,6 +222,7 @@ public class LanternaTest {
                     if (m.x == player.x && m.y == player.y) {
                         if (player.numberLife > 1) {
                             player.numberLife--;
+                            terminal.bell();
 
 
                             // Reset of all monster
@@ -237,6 +238,7 @@ public class LanternaTest {
                             Print(player.numberLife);
                         } else {
                             // exit life loop and goes to new game
+                            terminal.bell();
                             continueReadingInput = false;
                         }
                     }
