@@ -1,3 +1,4 @@
+import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -68,18 +69,47 @@ public class LanternaTest {
             obsticleList.add(new Position(79, i));
         }
 
+        // Obstacles 1
+        for (int i = 0; i <= 5; i++) {
+            obsticleList.add(new Position(10, 5+i));
+        }
+        // Obstacles 2
+        for (int i = 0; i <= 5; i++) {
+            obsticleList.add(new Position(34, 15+i));
+        }
+        // Obstacles 3
+        for (int i = 0; i <= 14; i++) {
+            obsticleList.add(new Position(6+i, 15));
+        }
+        // Obstacles 4
+        for (int i = 0; i <= 18; i++) {
+            obsticleList.add(new Position(25+i, 13));
+        }
+        // Obstacles 5
+        for (int i = 0; i <= 3; i++) {
+            obsticleList.add(new Position(40+i, 8));
+        }
+        // Obstacles 6
+        for (int i = 0; i <= 7; i++) {
+            obsticleList.add(new Position(60+i, 4));
+        }
+        // Obstacles 7
+        for (int i = 0; i <= 10; i++) {
+            obsticleList.add(new Position(60+i, 18));
+        }
 
         drawFrame(obsticleList, block);
 
 
-        // create arrayList fro monster
+        // create arrayList from monster
 
         List<Monster> monsterList = new ArrayList<>();
 
         //Set Monster position
 
+
         Random r = new Random();
-        Monster monster1 = new Monster(r.nextInt(78), r.nextInt(23), '\u046A');
+        Monster monster1 = new Monster(r.nextInt(77), r.nextInt(23), '\u046A');
         monsterList.add(monster1);
 
         Monster monster2 = new Monster(r.nextInt(78), r.nextInt(23), '\u046A');
@@ -92,11 +122,6 @@ public class LanternaTest {
 
         // create player object
         Player player = new Player(35, 12);
-
-
-
-
-
 
         do { // Outer loop for every new game
 
@@ -129,6 +154,14 @@ public class LanternaTest {
 
             terminal.setCursorPosition(monster3.x, monster3.y);
             terminal.putCharacter(monster3.monsterIcon);
+
+            //terminal.setForegroundColor(TextColor.ANSI.BLUE);
+            //terminal.setBackgroundColor(TextColor.ANSI.BLUE);
+
+            //terminal.setBackgroundColor(TextColor.ANSI.DEFAULT);
+
+            drawFrame(obsticleList, block);
+            //terminal.setForegroundColor(TextColor.ANSI.DEFAULT);
             terminal.flush();
 
 
@@ -147,32 +180,32 @@ public class LanternaTest {
                 KeyType type = keyStroke.getKeyType();
                 Character c = keyStroke.getCharacter();// used Character, not char because it might be null
 
+                boolean crashIntoObsticle = false;
 
                 switch (type) {
                     case ArrowUp:
-                        player.movePlayerUp();
+                        crashIntoObsticle = player.movePlayerUp(obsticleList);
                         break;
 
                     case ArrowDown:
-                        player.movePlayerDown();
+                        crashIntoObsticle = player.movePlayerDown(obsticleList);
                         break;
 
                     case ArrowLeft:
-                        player.movePlayerLeft();
+                        crashIntoObsticle = player.movePlayerLeft(obsticleList);
                         break;
 
                     case ArrowRight:
-                        player.movePlayerRight();
+                        crashIntoObsticle = player.movePlayerRight(obsticleList);
                         break;
 
                     default:
                         break;
                 }
 
+                drawFrame(obsticleList, block);
 
                 // Check if we hit an obstacle, then we prevent player to pass the obstacle
-
-                boolean crashIntoObsticle = false;
 
                 for (Position p : obsticleList) {
                     //System.out.println(" " + p.x + " " + p.y);
@@ -197,7 +230,7 @@ public class LanternaTest {
 
                     m.xOld = m.x;
                     m.xOld = m.y;
-                    m.moveMonster(player);
+                    m.moveMonster(player, obsticleList);
 
                     CleanAndMove(m.x, m.y, m.xOld, m.yOld, m.monsterIcon);
 
@@ -233,6 +266,7 @@ public class LanternaTest {
                                 mon.x = r.nextInt(78);
                                 mon.y = r.nextInt(23);
                                 CleanAndMove(mon.x, mon.y, mon.xOld, mon.yOld, mon.monsterIcon);
+
                             }
 
                             Print(player.numberLife);

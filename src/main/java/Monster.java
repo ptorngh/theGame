@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Monster {
 
     int x;
@@ -14,7 +16,7 @@ public class Monster {
         this.monsterIcon = monsterIcon;
     }
 
-    public void moveMonster(Player player) {
+    public void moveMonster(Player player, List<Position> obsticleList) {
 
         // Saves monster position in order to be able to clean out screen later
         xOld = x;
@@ -22,14 +24,39 @@ public class Monster {
 
         if (player.x < x) {
             x--;
+            for (Position p : obsticleList) {
+                if (p.x == x && p.y == y) {
+                   x++;
+                   y=+2;
+                }
+            }
+
         } else if (player.x > x) {
             x++;
+            for (Position p : obsticleList) {
+                if (p.x == x && p.y == y) {
+                    x--;
+                    y=+2;
+                }
+            }
         }
 
         if (player.y < y) {
             y--;
+            for (Position p : obsticleList) {
+                if (p.x == x && p.y == y) {
+                    y++;
+                    x=+2;
+                }
+            }
         } else if (player.y > y) {
             y++;
+            for (Position p : obsticleList) {
+                if (p.x == x && p.y == y) {
+                    y--;
+                    x=+2;
+                }
+            }
         }
 
 

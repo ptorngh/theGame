@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Player {
     int x;
     int y;
@@ -14,28 +16,59 @@ public class Player {
         this.numberLife = 3;
     }
 
-    public void movePlayerUp() {
+    public boolean movePlayerUp(List<Position> obsticleList) {
         yOld = y;
         xOld = x;
-        y-=1;
+        y-=2;
+        for (Position p : obsticleList) {
+            if (p.x == x && p.y == y) {
+                return true;
+            } else if (p.x == x && p.y == y + 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void movePlayerDown() {
+    public boolean movePlayerDown(List<Position> obsticleList) {
         yOld = y;
         xOld = x;
-        y+=1;
+        y+=2;
+        for (Position p : obsticleList) {
+            if (p.x == x && p.y == y) {
+                return true;
+            } else if (p.x == x && p.y == y - 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void movePlayerLeft() {
+    public boolean movePlayerLeft(List<Position> obsticleList) {
         yOld = y;
         xOld = x;
-        x-=1;
+        x-=2;
+        for (Position p : obsticleList) {
+            if (p.x == x && p.y == y) {
+                return true;
+            } else if (p.x == x+1 && p.y == y) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void movePlayerRight() {
+    public boolean movePlayerRight(List<Position> obsticleList) {
         yOld = y;
         xOld = x;
-        x+=1;
+        x+=2;
+        for (Position p : obsticleList) {
+            if (p.x == x && p.y == y) {
+                return true;
+            } else if (p.x == x-1 && p.y == y) {
+                return true;
+            }
+        }
+        return false;
     }
-
 }
